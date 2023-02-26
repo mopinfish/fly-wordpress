@@ -122,6 +122,56 @@ Once complete type `fly open` to visit `https://your-app-name.fly.dev`. After a 
 
 This guide assumes you already have a MySQL database and so does not cover creating one. You may want to [create a Fly app for a MySQL database](https://fly.io/docs/app-guides/mysql-on-fly/). Or use an external service such as Planetscale (this repo was tested with a Planetscale database).
 
+## Create MySQL Instance on fly.io
+
+[Official Doc](https://fly.io/docs/app-guides/mysql-on-fly/)
+```
+# Make a directory for the mysql app
+mkdir fly-wp-mysql
+cd fly-wp-mysql
+
+# Run `fly launch` to create an app
+fly launch
+
+# Create a volume named "mysqldata" within our app "my-mysql"
+fly volumes create mysqldata --size 10 # gb
+
+# Set secrets:
+# MYSQL_PASSWORD      - password set for user $MYSQL_USER
+# MYSQL_ROOT_PASSWORD - password set for user "root"
+fly secrets set MYSQL_PASSWORD=password MYSQL_ROOT_PASSWORD=password
+
+# fix fly.toml
+
+# Give the vm 2GB of ram
+fly scale memory 2048
+
+fly deploy
+
+flyctl proxy 3306 -a fly-wp-mysql
+
+# You can also set a different local port, if your 3306 port is already in use:
+# flyctl proxy 13306:3306 -a fly-wp-mysql
+
+MYSQL_PWD=your_password mysql -h localhost -P 3306 -u wordpress wordpress
+
+# allocate ip address
+flyctl ips allocate-v4
+```
+
+## Backups
+
+```
+# Get a volume ID
+fly volumes list -a fly-wp-mysql
+
+# List snapshots for a volume
+fly volumes snapshots list vol_xxx
+
+# Create a new volume from a snapshot
+fly volumes create --snapshot-id vs_xxx --size 10
+```
+
 ## Custom theme/plugins?
 
 Please see the documentation for the [WordPress image](https://hub.docker.com/_/wordpress). The `.dockerignore` and `Dockerfile` would need adapting to copy those into the image.

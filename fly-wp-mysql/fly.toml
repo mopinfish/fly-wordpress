@@ -1,0 +1,34 @@
+# fly.toml file generated for fly-wp-mysql on 2023-02-26T10:54:44+09:00
+
+app = "fly-wp-mysql"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[mounts]
+  source="mysqldata"
+  destination="/data"
+
+[env]
+  MYSQL_DATABASE = "wordpress"
+  MYSQL_USER = "wordpress"
+
+[build]
+  image = "mysql:8"
+
+[[services]]
+  internal_port = 3306
+  protocol = "tcp"
+  [[services.ports]]
+    port = 3306
+
+[experimental]
+  cmd = [
+    "--default-authentication-plugin", 
+    "mysql_native_password", 
+    "--datadir", 
+    "/data/mysql",
+    "--performance-schema=OFF",
+    "--innodb-buffer-pool-size", "64M"
+  ]
+

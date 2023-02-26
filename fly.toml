@@ -1,4 +1,4 @@
-app = "fly-hello-wordpress"
+app = "umiraku-wordpress"
 
 [env]
 WORDPRESS_CONFIG_EXTRA = "define(\"MYSQL_CLIENT_FLAGS\", MYSQLI_CLIENT_SSL);"
