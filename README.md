@@ -7,14 +7,18 @@ A simple example of running WordPress on [Fly.io](https://fly.io). It uses the o
 At a minimum you need to provide environment variables for a MySQL database: its name, hostname, username and password. That database must already exist (WordPress will not create it):
 
 ```
-docker build --tag wordpress-demo .
+docker build --tag fly-wordpress .
 
 docker run -p 8080:80 \
 -e WORDPRESS_DB_HOST='hostname-here' \
 -e WORDPRESS_DB_USER='username-here' \
 -e WORDPRESS_DB_PASSWORD='password-here' \
 -e WORDPRESS_DB_NAME='database-name-here' \
-wordpress-demo
+fly-wordpress
+
+# use docker compose
+docker-compose build
+docker-compose up -d
 ```
 
 If you then visit `http://localhost:8080/` you should see the WordPress installation page. Pick your language, provide some user details and it will then install into your provided database.
